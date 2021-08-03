@@ -1,0 +1,54 @@
+package analizadores; 
+import java_cup.runtime.*;
+
+parser code 
+{:
+
+    public String salida = "";
+
+    public String getsalida(){
+        return salida;
+    }
+    
+    public void syntax_error(Symbol s){ 
+        System.out.println("Error Sintáctico en la Línea " + (s.left) +
+        " Columna "+s.right+ ". No se esperaba este componente: " +s.value+"."); 
+    } 
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        System.out.println("Error síntactico irrecuperable en la Línea " + 
+        (s.left)+ " Columna "+s.right+". Componente " + s.value + 
+        " no reconocido."); 
+    }  
+:} 
+
+terminal String ptcoma,parizq,parder;
+terminal String mas,menos,por,dividido;
+terminal String entero;
+terminal String decimal;
+terminal String calcular;
+
+non terminal String INICIO;
+non terminal String INSTRUCCIONES;
+non terminal String INSTRUCCION;
+non terminal Double EXP;
+
+precedence left mas,menos;
+precedence left por,dividido;
+
+start with INICIO; 
+
+INICIO::=INSTRUCCIONES;
+
+INSTRUCCIONES ::= INSTRUCCION INSTRUCCIONES
+    | INSTRUCCION;
+
+INSTRUCCION ::= calcular parizq EXP parder ptcoma;
+
+EXP  ::= EXP mas EXP
+    | EXP menos EXP
+    | EXP por EXP
+    | EXP dividido EXP
+    | entero
+    | decimal
+    | parizq EXP parder;
