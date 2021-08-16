@@ -1,13 +1,16 @@
 package analizadores; 
 import java_cup.runtime.*;
+import aplicacion.*;
 
 parser code 
 {:
 
+    public int contadorNodo = 0;
     public String salida = "";
 
-    public String getsalida(){
-        return salida;
+    public nodo nodoSalida;
+    public nodo getSalida(){
+        return nodoSalida;
     }
     
     public void syntax_error(Symbol s){ 
@@ -28,27 +31,36 @@ terminal String entero;
 terminal String decimal;
 terminal String calcular;
 
-non terminal String INICIO;
-non terminal String INSTRUCCIONES;
-non terminal String INSTRUCCION;
-non terminal Double EXP;
+non terminal nodo INICIO;
+non terminal nodo EXP;
 
 precedence left mas,menos;
 precedence left por,dividido;
 
 start with INICIO; 
 
-INICIO::=INSTRUCCIONES;
+INICIO::=EXP:var1 {:nodoSalida=var1;:};
 
-INSTRUCCIONES ::= INSTRUCCION INSTRUCCIONES
-    | INSTRUCCION;
+EXP  ::= EXP:var1 mas EXP:var2          {: RESULT=new nodo(contadorNodo, "SUMA", var1, var2); 
+                                            contadorNodo++;
+                                        :}
+    | EXP:var1 menos EXP:var2           {: RESULT=new nodo(contadorNodo, "RESTA", var1, var2);
+                                            contadorNodo++;
+                                        :}
+    | EXP:var1 por EXP:var2             {: RESULT=new nodo(contadorNodo, "MULTIPLICACION", var1, var2);
+                                            contadorNodo++;
+                                        :}
+    | EXP:var1 dividido EXP:var2        {: RESULT=new nodo(contadorNodo, "DIVISION", var1, var2);
+                                            contadorNodo++;
+                                        :}
+    | entero:var1                       {: RESULT=new nodo(contadorNodo, "VALOR", new Double(var1));
+                                            contadorNodo++;
+                                        :}
+    | decimal:var1                      {: RESULT=new nodo(contadorNodo, "VALOR", new Double(var1));
+                                            contadorNodo++;
+                                        :}
+    | parizq EXP:var1 parder            {: RESULT=var1;
+                                            contadorNodo++;
+                                        :};
 
-INSTRUCCION ::= calcular parizq EXP parder ptcoma;
-
-EXP  ::= EXP mas EXP
-    | EXP menos EXP
-    | EXP por EXP
-    | EXP dividido EXP
-    | entero
-    | decimal
-    | parizq EXP parder;
+VARIABLE: id:var1 ptcoma {: RESULT= new atributo(proyecto1, "VARIABLE", var1, null); :}
