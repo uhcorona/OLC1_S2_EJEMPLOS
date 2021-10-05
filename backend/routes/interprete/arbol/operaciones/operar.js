@@ -22,6 +22,11 @@ function procesarExpresion(expresion, ts) {
             valorDer = procesarExpresion(expresion.operandoDerecho, ts);
             resultado = procesarMultiplicacion(valorIzq, valorDer);
             return resultado;
+        case TipoOperacion.Menor:
+            valorIzq = procesarExpresion(expresion.operandoIzquierdo, ts);
+            valorDer = procesarExpresion(expresion.operandoDerecho, ts);
+            resultado = procesarMenor(valorIzq, valorDer);
+            return resultado;
         case TipoOperacion.Division:
             break;
         case TipoValor.Bandera:
@@ -31,7 +36,7 @@ function procesarExpresion(expresion, ts) {
         case TipoValor.Cadena:
             break;
         case TipoValor.Identificador:
-            break;
+            return ts.obtener(expresion.valor);
     }
 }
 
@@ -96,6 +101,56 @@ function procesarMultiplicacion(valorIzq, valorDer) {
                     return {
                         tipo: TipoDato.Decimal,
                         valor: valorIzq.valor * valorDer.valor
+                    }
+                case TipoDato.Bandera:
+                    // Error
+                    /*return {
+                        error: 'No se puede sumar un decimal con una bandera',
+                        linea: expresion.linea,
+                        columna: expresion.columna
+                    }*/
+                    break;
+                case TipoDato.Cadena:
+                    //Error
+                    break;
+            }
+            break;
+        case TipoDato.Bandera:
+            switch (valorDer.tipo) {
+                case TipoDato.Decimal:
+                    //Operacion no realizable
+                    break;
+                case TipoDato.Bandera:
+                    //Operacion no realizable
+                    break;
+                case TipoDato.Cadena:
+                    //Operacio no realizable
+                    break;
+            }
+            break;
+        case TipoDato.Cadena:
+            switch (valorDer.tipo) {
+                case TipoDato.Decimal:
+                    break;
+                case TipoDato.Bandera:
+                    //Operacion no realizable
+                    break;
+                case TipoDato.Cadena:
+                    break;
+            }
+            break;
+    }
+}
+
+function procesarMenor(valorIzq, valorDer) {
+    //Seccion de casteos suma
+    switch (valorIzq.tipo) {
+        case TipoDato.Decimal:
+            switch (valorDer.tipo) {
+                case TipoDato.Decimal:
+                    return {
+                        tipo: TipoDato.Bandera,
+                        valor: valorIzq.valor < valorDer.valor
                     }
                 case TipoDato.Bandera:
                     // Error

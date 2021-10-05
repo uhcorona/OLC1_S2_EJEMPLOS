@@ -37,6 +37,14 @@ let Instrucciones = {
             tipo: TipoInstruccion.Imprimir,
             expresion: expresion
         }
+    },
+    nuevoIf: (expresion, cuerpoverdadero, cuerpofalso) => {
+        return {
+            tipo: TipoInstruccion.If,
+            expresion: expresion,
+            cuerpoverdadero: cuerpoverdadero,
+            cuerpofalso: cuerpofalso
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 let TipoInstruccion = {
     Imprimir: 'Imprimir',
-    Declaracion: 'Declaracion'
+    Declaracion: 'Declaracion',
+    If: 'If'
 }
 
 module.exports.TipoInstruccion = TipoInstruccion;
